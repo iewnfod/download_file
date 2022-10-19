@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ch">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <style>
+            .m {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; flex-direction: column" id="main">
+
+        </div>
+        <div style="display: none" id="data">
+            {{t}}
+        </div>
+    </body>
+    <template id="a_log">
+        <div>
+            <span id="level" class="m"></span>
+            <span id="msg" class="m"></span>
+            <span id="code" class="m"></span>
+            <span id="explain" class="m"></span>
+        </div>
+    </template>
+    <script>
+        let t = document.getElementById('data').innerText.split('\n')
+        for (let i = 0; i < t.length; i ++) {
+            var temp = document.getElementById('a_log')
+            let d = t[i].split('-|-')
+            if (d.length <= 1) {
+                continue
+            }
+            temp.content.getElementById('level').innerText = d[0]
+            temp.content.getElementById('msg').innerText = d[1]
+            temp.content.getElementById('code').innerText = d[2]
+            if (d.length == 4) {
+                temp.content.getElementById('explain').innerText = d[3]
+            }
+            let clone = temp.content.cloneNode(true)
+            temp.content.getElementById('level').innerText = ''
+            temp.content.getElementById('msg').innerText = ''
+            temp.content.getElementById('code').innerText = ''
+            temp.content.getElementById('explain').innerText = ''
+            document.getElementById('main').appendChild(clone)
+        }
+    </script>
+</html>

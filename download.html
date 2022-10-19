@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ch">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <style>
+            .a {
+                cursor: pointer;
+                margin: 10px;
+                background-color: transparent;
+                border: 0;
+                border-radius: 10px;
+                padding: 5px;
+            }
+            .a:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main" style="display: flex; flex-direction: column">
+
+        </div>
+        <div id="data" style="display: none">
+            {{t}}
+        </div>
+
+        <input id="address" type="text" onchange="get_addr()" placeholder="email address">
+
+    </body>
+
+    <template id="a_tag">
+        <button name="" id="link" class="a" onclick="send(this.name)">
+            <span id="name" style="color: blue"></span>
+        </button>
+    </template>
+
+    <script>
+        var address = ''
+
+        function send(name) {
+            console.log('send')
+            if (address != '' && name != '') {
+                var httpResponse = new XMLHttpRequest()
+                httpResponse.open('GET', './download/'+name+'|'+address, true)
+                httpResponse.send()
+            } else {
+                alert('请输入正确的邮箱地址')
+            }
+        }
+
+        var v = document.getElementById('data').innerText.split('\n')
+        for (let i = 0; i < v.length; i ++) {
+            if (v[i] === '') {
+                continue
+            }
+            var temp = document.getElementById('a_tag')
+            temp.content.getElementById('name').innerText = v[i]
+            temp.content.getElementById('link').setAttribute('name', v[i])
+            let clone = temp.content.cloneNode(true)
+            document.getElementById('main').appendChild(clone)
+        }
+
+        function get_addr() {
+            address = document.getElementById('address').value
+        }
+    </script>
+
+</html>

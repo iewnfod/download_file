@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ch">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <style>
+            body {
+                width: 100%;
+                height: 100%;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; width: 100%">
+            <span style="margin: 10px">请输入下载地址</span>
+            <input type="text" id="url" style="margin: 10px">
+            <button id="start" style="margin: 10px">开始下载</button>
+            <span id="filename" style="margin: 10px"></span>
+        </div>
+<!--        <div style="margin: 10px">-->
+<!--            获取下载资源请前往-->
+<!--        </div>-->
+        <iframe id="log" src="./log" style="width: 90%; height: 500px; margin: 10px"></iframe>
+        <button onclick="refresh_log()">刷新</button>
+
+        <iframe id="download" src="./download" style="width: 90%; height: 500px; margin: 10px"></iframe>
+        <button onclick="refresh_download()">刷新</button>
+
+    </body>
+    <script>
+        function refresh_download() {
+            document.getElementById('download').contentWindow.location.reload(true)
+        }
+        function refresh_log() {
+            document.getElementById('log').contentWindow.location.reload(true)
+        }
+        function join(arr, sep) {
+            var r = ''
+            for (let i = 0; i < arr.length; i ++) {
+                if (i === arr.length-1) {
+                    return r + arr[i].toString()
+                } else {
+                    r += arr[i].toString() + sep.toString()
+                }
+            }
+        }
+
+        document.getElementById('start').addEventListener('click', function () {
+            let url = document.getElementById('url').value
+            document.getElementById('filename').innerText = '文件名: ' + url.split('/')[url.split('/').length-1]
+            // console.log(url)
+            var new_url = []
+            for (let i = 0; i < url.length; i ++) {
+                new_url.push(url.charCodeAt(i).toString())
+            }
+            // console.log(new_url)
+            url = join(new_url, ' ')
+            var httpResponse = new XMLHttpRequest()
+            httpResponse.open('GET', './d/'+url, true)
+            httpResponse.send()
+            refresh_log()
+            refresh_download()
+        })
+    </script>
+</html>
