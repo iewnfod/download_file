@@ -11,8 +11,22 @@
                 border: 0;
                 border-radius: 10px;
                 padding: 5px;
+                transition: .5s ease;
+                width: 90%;
             }
             .a:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+            .bt {
+                padding: 5px;
+                cursor: pointer;
+                height: 100%;
+                transition: .5s ease;
+                background-color: transparent;
+                border: 0;
+                border-radius: 10px;
+            }
+            .bt:hover {
                 background-color: rgba(0, 0, 0, 0.05);
             }
         </style>
@@ -30,13 +44,27 @@
     </body>
 
     <template id="a_tag">
-        <button name="" id="link" class="a" onclick="send(this.name)">
-            <span id="name" style="color: blue"></span>
-        </button>
+        <div style="display: flex; flex-direction: row; flex-grow: 1; align-items: center; border-top: 1px black solid">
+            <button name="" id="link" class="a" onclick="send(this.name)">
+                <span id="name" style="color: blue"></span>
+            </button>
+            <button id="remove" name="" style="display: inline" class="bt" onclick="remove(this.name)">删除</button>
+            <button id="remove_confirm_true" name="" style="display: none" class="bt" onclick="remove_confirm_true(this.name)">确认</button>
+            <button id="remove_confirm_false" name="" style="display: none" class="bt" onclick="remove_confirm_false(this.name)">取消</button>
+        </div>
     </template>
 
     <script>
         var address = ''
+
+        function getElementByNameAndId(id, name) {
+            let n = document.getElementsByName(name)
+            for (let i = 0; i < n.length; i ++) {
+                if (n[i].id === id) {
+                    return n[i]
+                }
+            }
+        }
 
         function send(name) {
             console.log('send')
@@ -49,13 +77,35 @@
             }
         }
 
+        function remove_confirm_true(name) {
+            var httpResponse = new XMLHttpRequest()
+            httpResponse.open('GET', './r/'+name, true)
+            httpResponse.send()
+            window.location.reload()
+        }
+
+        function remove_confirm_false(name) {
+            getElementByNameAndId('remove_confirm_true', name).style.display = 'none'
+            getElementByNameAndId('remove_confirm_false', name).style.display = 'none'
+            getElementByNameAndId('remove', name).style.display = 'inline'
+        }
+
+        function remove(name) {
+            getElementByNameAndId('remove', name).style.display = 'none'
+            getElementByNameAndId('remove_confirm_true', name).style.display = 'inline'
+            getElementByNameAndId('remove_confirm_false', name).style.display = 'inline'
+        }
+
         var v = document.getElementById('data').innerText.split('\n')
-        for (let i = 0; i < v.length; i ++) {
+        for (let i = 0; i < v.length-1; i ++) {
             if (v[i] === '') {
                 continue
             }
             var temp = document.getElementById('a_tag')
             temp.content.getElementById('name').innerText = v[i]
+            temp.content.getElementById('remove').setAttribute('name', v[i])
+            temp.content.getElementById('remove_confirm_true').setAttribute('name', v[i])
+            temp.content.getElementById('remove_confirm_false').setAttribute('name', v[i])
             temp.content.getElementById('link').setAttribute('name', v[i])
             let clone = temp.content.cloneNode(true)
             document.getElementById('main').appendChild(clone)

@@ -6,10 +6,13 @@ from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+host = input('Host: ')
+port = input('Port: ')
+
 # 书写日志
 def log(msg, level, exit_code = 0, exit_explain = ''):
     level_dict = {1: '[INFO]\t\t', 2: '[WARNING]\t', 3: '[ERROR]\t\t', 4: '[FATAL]\t\t'}
-    msg = level_dict[level] + msg + f'\t\texit_code = [{exit_code}]' 
+    msg = level_dict[level] + msg + f'\t\texit_code = [{exit_code}]'
 
     if exit_code != 0 or exit_explain != '':
         msg += '\t\t' + exit_explain
@@ -31,6 +34,8 @@ def download(url):
     log(msg = '开始下载: ' + '"' + url + '"', level = 1)
 
     name = url.split('/')[-1]
+    if name == '':
+        name = url.split('/')[-2]
     result = os.system(f'wget \"{url}\" -O ./download/{name}') >> 8
 
     print(result)
@@ -116,6 +121,16 @@ def show_download():
 def sd(content):
         _thread.start_new_thread(start_download, (content, ))
 
+# 删除
+@bottle.route('/r/<name>')
+def r(name):
+    name = name.strip()
+    try:
+        os.system('rm ./download/'+name)
+        log('删除文件\"'+name+'\"成功', 1)
+    except:
+        log('删除文件\"'+name+'\"失败', 3, exit_code=1)
+
 # index
 @bottle.route('/')
 def index():
@@ -133,4 +148,4 @@ def get_log():
     return bottle.template('log.html', t=t)
 
 # 启动
-bottle.run(host='localhost', port=8888)
+bottle.run(host=host, port=port)

@@ -2,7 +2,7 @@
 <html lang="ch">
     <head>
         <meta charset="UTF-8">
-        <title>Title</title>
+        <title>下载文件</title>
         <style>
             body {
                 width: 100%;
@@ -51,7 +51,11 @@
 
         document.getElementById('start').addEventListener('click', function () {
             let url = document.getElementById('url').value
-            document.getElementById('filename').innerText = '文件名: ' + url.split('/')[url.split('/').length-1]
+            let name = url.split('/')[url.split('/').length-1]
+            if (name === '') {
+                name = url.split('/')[url.split('/').length-2]
+            }
+            document.getElementById('filename').innerText = '文件名: ' + name
             // console.log(url)
             var new_url = []
             for (let i = 0; i < url.length; i ++) {
